@@ -134,3 +134,29 @@ class Renderer {
         }
     }
 }
+
+class HashFromPlusGif {
+    constructor() {
+        this.renderer = new Renderer()
+        this.gifEncoder = new GifEncoder(w, h)
+        this.canvas = new Canvas(w, h)
+        this.context = this.canvas.getContext('2d')
+        this.initEncoder()
+    }
+
+    initEncoder() {
+        this.gifEncoder.setDelay(50)
+        this.gifEncoder.setRepeat(0)
+        this.gifEncoder.setQuality(100)
+    }
+
+    create(fn) {
+        this.gifEncoder.createReadStream().pipe(require('fs').createWriteStream(fn))
+        this.renderer.render(this.context)
+    }
+
+    static init(fn) {
+        const gif = new HashFromPlusGif()
+        gif.create(fn)
+    }
+}
