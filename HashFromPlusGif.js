@@ -1,3 +1,7 @@
+const w = 500, h = 500
+const nodes = 5
+const Canvas = require('canvas').Canvas
+const GifEncoder = requie('gifencoder')
 class State {
     constructor() {
         this.scale = 0
