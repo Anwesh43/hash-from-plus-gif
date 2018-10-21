@@ -1,7 +1,7 @@
 const w = 500, h = 500
 const nodes = 5
 const Canvas = require('canvas').Canvas
-const GifEncoder = requie('gifencoder')
+const GifEncoder = require('gifencoder')
 class State {
     constructor() {
         this.scale = 0
@@ -43,7 +43,7 @@ class HFPNode {
     draw(context) {
         const gap = w / (nodes + 1)
         const size = (2 * gap) / 3
-        const kGap = size / 3
+        const kGap = size / 6
         context.lineWidth = Math.min(w, h) / 60
         context.lineCap = 'round'
         context.strokeStyle = '#43A047'
@@ -52,7 +52,7 @@ class HFPNode {
         for (var j = 0; j < 2; j++) {
             const sc = Math.min(0.5, Math.max(0, this.state.scale - 0.5 * j)) * 2
             context.save()
-            context.rotate((Math.PI/2 - Math.PI/4 * sc))
+            context.rotate((Math.PI/2 - Math.PI/9 * sc) * j)
             for(var k = 0; k < 2; k++) {
                 context.beginPath()
                 context.moveTo(-size/2, (1 - 2 * k) * kGap * sc)
@@ -107,8 +107,10 @@ class HashFromPlus {
             })
             if (this.curr.i == 0 && this.dir == 1) {
                 cb()
+                console.log("stopped")
             } else {
                 this.curr.startUpdating()
+                console.log(`completed animating ${this.curr.i}`)
             }
         })
     }
@@ -152,7 +154,12 @@ class HashFromPlusGif {
 
     create(fn) {
         this.gifEncoder.createReadStream().pipe(require('fs').createWriteStream(fn))
-        this.renderer.render(this.context)
+        this.gifEncoder.start()
+        this.renderer.render(this.context, (ctx) => {
+            this.gifEncoder.addFrame(ctx)
+        }, () => {
+            this.gifEncoder.end()
+        })
     }
 
     static init(fn) {
