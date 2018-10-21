@@ -62,6 +62,9 @@ class HFPNode {
             context.restore()
         }
         context.restore()
+        if (this.next) {
+            this.next.draw(context)
+        }
     }
 
     update(cb) {
@@ -83,4 +86,31 @@ class HFPNode {
         cb()
         return this
     }
+}
+
+class HashFromPlus {
+    constructor() {
+        this.root = new HFPNode(0)
+        this.dir = 1
+        this.curr = this.root
+        this.curr.startUpdating()
+    }
+
+    draw(context) {
+        this.root.draw(context)
+    }
+
+    update(cb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () =>{
+                this.dir *= -1
+            })
+            if (this.curr.i == 0 && this.dir == 1) {
+                cb()
+            } else {
+                this.curr.startUpdating()
+            }
+        })
+    }
+
 }
