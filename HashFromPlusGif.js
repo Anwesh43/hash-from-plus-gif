@@ -160,3 +160,5 @@ class HashFromPlusGif {
         gif.create(fn)
     }
 }
+
+module.exports = HashFromPlusGif.init
