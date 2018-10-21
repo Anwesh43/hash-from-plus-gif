@@ -114,3 +114,23 @@ class HashFromPlus {
     }
 
 }
+
+class Renderer {
+    constructor() {
+        this.running = true
+        this.hfp = new HashFromPlus()
+    }
+
+    render(context, cb, endcb) {
+        while(this.running) {
+            context.fillStyle = '#BDBDBD'
+            context.fillRect(0, 0, w, h)
+            this.hfp.draw(context)
+            cb(context)
+            this.hfp.update(() => {
+                endcb()
+                this.running = false
+            })
+        }
+    }
+}
